@@ -1,0 +1,13 @@
+FIREBASE SETUP CHECKLIST
+
+[ ] Create Firebase project
+[ ] Add Web App
+[ ] Enable Authentication > Phone
+[ ] Add Azure Static Web Apps domain to Authorized domains
+[ ] Copy Web App config
+[ ] Paste config into firebase-config.js
+[ ] Commit and push to GitHub
+[ ] Wait for GitHub Actions / Azure Static Web Apps deployment
+[ ] Test with a real phone number
+
+Do not paste Firebase Admin/service-account credentials into this project.

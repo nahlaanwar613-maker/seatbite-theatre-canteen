@@ -3,110 +3,193 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SeatBite — Theatre Canteen</title>
+  <title>SeatBite — Theatre Food Ordering</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div id="toast" class="toast"></div>
 
-<header class="topbar">
-  <div class="brand"><div class="logo">🍿</div><div><h1>SeatBite</h1><span>Order to your seat</span></div></div>
-  <button class="cart-button" onclick="openCart()">🛒 <span id="cartCount">0</span></button>
-</header>
+  <header class="topbar">
+    <a class="brand" href="#" data-view="home"><span>🍿</span> SeatBite</a>
+    <nav id="mainNav" class="nav hidden">
+      <button data-view="home">Home</button>
+      <button data-view="orders">My Orders</button>
+      <button data-view="profile">Profile</button>
+      <button id="logoutBtn" class="danger-link">Logout</button>
+    </nav>
+  </header>
 
-<section id="loginPage" class="auth-page">
-  <div class="auth-card">
-    <div class="auth-logo">🍿</div>
-    <p class="eyebrow">WELCOME TO SEATBITE</p>
-    <h2>Food delivered to your seat.</h2>
-    <p class="muted">Sign in to order snacks while you enjoy the movie.</p>
-    <form onsubmit="login(event)">
-      <label>Email</label>
-      <input id="email" type="email" placeholder="you@example.com" required>
-      <label>Password</label>
-      <input id="password" type="password" placeholder="Enter password" minlength="4" required>
-      <button class="primary" type="submit">Login</button>
-    </form>
-    <p class="demo-note">Demo login — any valid email and 4+ character password.</p>
-  </div>
-</section>
+  <main>
+    <section id="authView" class="view auth-view">
+      <div class="auth-card">
+        <div class="logo-mark">🍿</div>
+        <h1>SeatBite</h1>
+        <p class="muted">Order cinema food directly to your seat.</p>
 
-<main id="app" class="hidden">
-  <section class="hero">
-    <div><p class="eyebrow">THEATRE CANTEEN</p>
-      <h2>Enjoy the movie.<br><span>We'll bring the food.</span></h2>
-      <p class="hero-text">Order snacks and drinks without leaving your seat.</p>
-    </div>
-    <div class="hero-popcorn">🍿</div>
-  </section>
+        <div class="auth-tabs">
+          <button id="loginTab" class="active">Login</button>
+          <button id="signupTab">Create Account</button>
+        </div>
 
-  <section class="seat-card">
-    <div><label for="seat">Your seat</label><input id="seat" type="text" placeholder="e.g. B12" maxlength="5"></div>
-    <div class="show-info">🎬 Screen 3 <strong>•</strong> 7:30 PM</div>
-  </section>
+        <form id="authForm">
+          <div id="nameGroup" class="field hidden">
+            <label for="nameInput">Your name</label>
+            <input id="nameInput" type="text" placeholder="Enter your name">
+          </div>
 
-  <section class="categories">
-    <button class="active" onclick="filterMenu('all', this)">All</button>
-    <button onclick="filterMenu('popcorn', this)">🍿 Popcorn</button>
-    <button onclick="filterMenu('snacks', this)">🍔 Snacks</button>
-    <button onclick="filterMenu('drinks', this)">🥤 Drinks</button>
-    <button onclick="filterMenu('combos', this)">🎁 Combos</button>
-  </section>
+          <div class="field">
+            <label for="phoneInput">Phone number</label>
+            <input id="phoneInput" type="tel" placeholder="+91 9876543210" autocomplete="tel">
+            <small>Use international format, for example +919876543210.</small>
+          </div>
 
-  <section id="menu" class="menu-grid"></section>
-</main>
+          <div id="recaptcha-container" class="recaptcha"></div>
 
-<div id="cartOverlay" class="overlay hidden" onclick="closeCart(event)">
-  <aside class="cart-panel" onclick="event.stopPropagation()">
-    <div class="cart-head"><h2>Your order</h2><button onclick="closeCart()">✕</button></div>
-    <div id="cartItems"></div>
-    <div class="cart-total">
-      <div><span>Subtotal</span><strong id="subtotal">₹0</strong></div>
-      <div><span>Service fee</span><strong id="serviceFee">₹0</strong></div>
-      <div class="grand"><span>Total</span><strong id="total">₹0</strong></div>
-    </div>
-    <button class="checkout" onclick="openPayment()">Continue to payment</button>
-  </aside>
-</div>
+          <button id="sendOtpBtn" class="primary full" type="submit">Send OTP</button>
+        </form>
 
-<div id="paymentOverlay" class="overlay hidden">
-  <aside class="payment-panel">
-    <div class="cart-head"><h2>Payment</h2><button onclick="closePayment()">✕</button></div>
-    <div class="payment-summary"><span>Amount to pay</span><strong id="paymentAmount">₹0</strong></div>
+        <div id="otpPanel" class="otp-panel hidden">
+          <h3>Verify your phone</h3>
+          <p class="muted">Enter the real SMS code sent to your phone.</p>
+          <input id="otpInput" class="otp-input" type="text" inputmode="numeric" maxlength="6" placeholder="6-digit OTP">
+          <button id="verifyOtpBtn" class="primary full">Verify OTP</button>
+          <button id="resendOtpBtn" class="text-button">Send OTP again</button>
+        </div>
 
-    <div class="payment-options">
-      <button class="payment-option active" onclick="selectPayment('upi', this)">
-        <span>📱</span><div><strong>UPI</strong><small>Pay using your UPI app</small></div>
-      </button>
-      <button class="payment-option" onclick="selectPayment('cod', this)">
-        <span>💵</span><div><strong>Cash on Delivery</strong><small>Pay cash when food reaches your seat</small></div>
-      </button>
-    </div>
+        <p id="authMessage" class="message"></p>
+        <p class="tiny">Real OTP is powered by Firebase Authentication. Configure your Firebase web app before deploying.</p>
+      </div>
+    </section>
 
-    <div id="upiBox" class="pay-box">
-      <label>UPI ID</label>
-      <input id="upiId" type="text" placeholder="example@upi">
-      <p>Demo payment screen. Real UPI verification requires a payment gateway/backend.</p>
-    </div>
+    <section id="homeView" class="view hidden">
+      <div class="hero">
+        <div>
+          <span class="eyebrow">CINEMA FOOD DELIVERY</span>
+          <h2>Choose your show, then order food.</h2>
+          <p>Select a location, theatre, movie and show before the canteen menu unlocks.</p>
+        </div>
+        <div class="hero-icon">🎬</div>
+      </div>
 
-    <div id="codBox" class="pay-box hidden">
-      <p>Keep the exact amount ready. The canteen staff will collect payment when your order is delivered.</p>
-    </div>
+      <div class="steps">
+        <div class="step active"><b>1</b><span>Location</span></div>
+        <div class="step"><b>2</b><span>Theatre</span></div>
+        <div class="step"><b>3</b><span>Movie & Show</span></div>
+        <div class="step"><b>4</b><span>Seat</span></div>
+        <div class="step"><b>5</b><span>Food & Pay</span></div>
+      </div>
 
-    <button class="checkout" onclick="confirmPayment()">Confirm & place order</button>
-  </aside>
-</div>
+      <div class="selection-grid">
+        <div class="panel">
+          <div class="panel-title"><span>📍</span><div><h3>1. Select location</h3><p>Choose where you are watching.</p></div></div>
+          <select id="locationSelect"><option value="">Select location</option></select>
+        </div>
 
-<div id="successModal" class="success-modal hidden">
-  <div class="success-card">
-    <div class="success-icon">✓</div>
-    <h2>Order confirmed!</h2>
-    <p id="orderMessage"></p>
-    <div class="order-number" id="orderNumber"></div>
-    <p class="muted">Your order has been sent to the theatre canteen. Enjoy the movie!</p>
-    <button onclick="closeSuccess()">Continue watching</button>
-  </div>
-</div>
+        <div class="panel">
+          <div class="panel-title"><span>🏢</span><div><h3>2. Select theatre</h3><p>Only theatres in the selected location.</p></div></div>
+          <select id="theatreSelect" disabled><option value="">Select theatre</option></select>
+        </div>
 
-<script src="script.js"></script>
+        <div class="panel">
+          <div class="panel-title"><span>🎞️</span><div><h3>3. Select movie & show</h3><p>Choose a movie and available show.</p></div></div>
+          <select id="movieSelect" disabled><option value="">Select movie</option></select>
+          <select id="showSelect" disabled><option value="">Select show</option></select>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title"><span>💺</span><div><h3>4. Select seat</h3><p>Your food will be delivered to this seat.</p></div></div>
+          <input id="seatInput" type="text" maxlength="5" placeholder="Example: A12" disabled>
+          <button id="unlockMenuBtn" class="primary full" disabled>Unlock Canteen Menu</button>
+        </div>
+      </div>
+
+      <div id="showSummary" class="show-summary hidden"></div>
+
+      <section id="menuSection" class="hidden">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">CANTEEN</span>
+            <h2>Order food for your seat</h2>
+          </div>
+          <button class="secondary" data-view="orders">📦 My Orders</button>
+        </div>
+        <div class="category-tabs" id="categoryTabs"></div>
+        <div id="menuGrid" class="menu-grid"></div>
+
+        <div class="cart-panel">
+          <div class="cart-header">
+            <h3>🛒 Your Cart</h3>
+            <span id="cartCount" class="pill">0 items</span>
+          </div>
+          <div id="cartItems" class="cart-items"></div>
+          <div id="cartTotals" class="cart-totals"></div>
+          <button id="checkoutBtn" class="primary full" disabled>Continue to Payment</button>
+        </div>
+      </section>
+    </section>
+
+    <section id="paymentView" class="view hidden">
+      <div class="page-heading">
+        <button class="back-button" data-view="home">← Back</button>
+        <div><span class="eyebrow">CHECKOUT</span><h2>Payment</h2><p>Order food only for the selected show and seat.</p></div>
+      </div>
+      <div class="checkout-grid">
+        <div class="panel">
+          <h3>Order summary</h3>
+          <div id="checkoutSummary"></div>
+        </div>
+        <div class="panel">
+          <h3>Choose payment method</h3>
+          <div class="payment-options">
+            <label class="payment-option"><input type="radio" name="payment" value="upi" checked><span>📱</span><div><b>UPI</b><small>Demo checkout — real gateway can be connected later.</small></div></label>
+            <label class="payment-option"><input type="radio" name="payment" value="cod"><span>💵</span><div><b>Cash on Delivery</b><small>Pay when the order is delivered to your seat.</small></div></label>
+          </div>
+          <div id="upiBox" class="upi-box">
+            <label for="upiId">UPI ID</label>
+            <input id="upiId" type="text" placeholder="example@upi">
+            <small>This prototype validates the format only; it does not move money.</small>
+          </div>
+          <button id="placeOrderBtn" class="primary full">Place Order</button>
+          <p id="paymentMessage" class="message"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="ordersView" class="view hidden">
+      <div class="page-heading">
+        <div><span class="eyebrow">YOUR ACTIVITY</span><h2>My Orders</h2><p>Track every SeatBite order.</p></div>
+        <button class="secondary" data-view="home">+ New Order</button>
+      </div>
+      <div id="ordersList" class="orders-list"></div>
+    </section>
+
+    <section id="profileView" class="view hidden">
+      <div class="page-heading"><div><span class="eyebrow">ACCOUNT</span><h2>Profile</h2><p>Your SeatBite account.</p></div></div>
+      <div class="profile-card panel">
+        <div class="avatar" id="profileAvatar">S</div>
+        <div><h3 id="profileName">SeatBite User</h3><p id="profilePhone" class="muted"></p></div>
+      </div>
+      <div class="panel">
+        <h3>Security</h3>
+        <p class="muted">Phone verification is handled by Firebase Authentication. OTP codes are never stored in this website.</p>
+      </div>
+    </section>
+
+    <section id="confirmationView" class="view hidden">
+      <div class="confirmation-card">
+        <div class="success-icon">✓</div>
+        <span class="eyebrow">ORDER CONFIRMED</span>
+        <h2>Your food is on the way.</h2>
+        <p id="confirmationText" class="muted"></p>
+        <div id="confirmationDetails" class="confirmation-details"></div>
+        <div class="confirmation-actions">
+          <button class="primary" data-view="orders">View My Orders</button>
+          <button class="secondary" data-view="home">Order More Food</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="script.js"></script>
 </body>
 </html>
