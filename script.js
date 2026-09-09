@@ -2,8 +2,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/fireba
 import {
   getAuth,
   onAuthStateChanged,
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
   updateProfile,
   signOut
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
@@ -53,8 +53,6 @@ const MENU = [
 ];
 
 let app, auth;
-let confirmationResult = null;
-let recaptchaVerifier = null;
 let isSignup = false;
 let selectedCategory = "All";
 let cart = {};
@@ -86,7 +84,7 @@ function showAuthenticated(user) {
   $("mainNav").classList.remove("hidden");
   $("homeView").classList.remove("hidden");
   $("profileName").textContent = user.displayName || "SeatBite User";
-  $("profilePhone").textContent = user.phoneNumber || "";
+  $("profilePhone").textContent = user.email || "";
   $("profileAvatar").textContent = (user.displayName || "S").charAt(0).toUpperCase();
   renderLocations();
   renderCategories();
@@ -105,23 +103,13 @@ function setAuthMessage(text, good=false) {
   $("authMessage").style.color = good ? "#7ff0ca" : "#ffadad";
 }
 
-function setupRecaptcha() {
-  if (!auth) throw new Error("Firebase is not configured.");
-  if (recaptchaVerifier) {
-    try { recaptchaVerifier.clear(); } catch {}
-  }
-  recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-    size: "normal",
-    callback: () => {}
-  });
-}
-
 $("loginTab").onclick = () => {
   isSignup = false;
   $("loginTab").classList.add("active");
   $("signupTab").classList.remove("active");
   $("nameGroup").classList.add("hidden");
-  $("sendOtpBtn").textContent = "Send OTP";
+  $("authSubmitBtn").textContent = "Login";
+  $("passwordInput").autocomplete = "current-password";
   setAuthMessage("");
 };
 
@@ -130,75 +118,53 @@ $("signupTab").onclick = () => {
   $("signupTab").classList.add("active");
   $("loginTab").classList.remove("active");
   $("nameGroup").classList.remove("hidden");
-  $("sendOtpBtn").textContent = "Create Account & Send OTP";
+  $("authSubmitBtn").textContent = "Create Account";
+  $("passwordInput").autocomplete = "new-password";
   setAuthMessage("");
 };
 
 $("authForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   if (!auth) return setAuthMessage("Add Firebase configuration first.");
-  const phone = $("phoneInput").value.trim().replace(/\s+/g,"");
+  const email = $("emailInput").value.trim().toLowerCase();
+  const password = $("passwordInput").value;
   const name = $("nameInput").value.trim();
-  if (!/^\+[1-9]\d{7,14}$/.test(phone)) return setAuthMessage("Enter a valid phone number in E.164 format, such as +919876543210.");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setAuthMessage("Enter a valid email address.");
+  if (password.length < 6) return setAuthMessage("Password must be at least 6 characters.");
   if (isSignup && name.length < 2) return setAuthMessage("Enter your name to create the account.");
   try {
-    $("sendOtpBtn").disabled = true;
-    setAuthMessage("Preparing secure phone verification…", true);
-    setupRecaptcha();
-    confirmationResult = await signInWithPhoneNumber(auth, phone, recaptchaVerifier);
-    sessionStorage.setItem("seatbitePendingName", name);
-    $("otpPanel").classList.remove("hidden");
-    setAuthMessage("OTP sent by SMS. Check your phone.", true);
+    $("authSubmitBtn").disabled = true;
+    if (isSignup) {
+      setAuthMessage("Creating your account…", true);
+      const result = await createUserWithEmailAndPassword(auth, email, password);
+      if (name) await updateProfile(result.user, {displayName:name});
+      setAuthMessage("Account created successfully.", true);
+      showAuthenticated(result.user);
+    } else {
+      setAuthMessage("Signing you in…", true);
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      setAuthMessage("Login successful.", true);
+      showAuthenticated(result.user);
+    }
   } catch (err) {
     console.error(err);
     setAuthMessage(firebaseError(err));
-    try { recaptchaVerifier?.clear(); } catch {}
   } finally {
-    $("sendOtpBtn").disabled = false;
+    $("authSubmitBtn").disabled = false;
   }
 });
 
-$("verifyOtpBtn").onclick = async () => {
-  const code = $("otpInput").value.trim();
-  if (!confirmationResult || !/^\d{6}$/.test(code)) return setAuthMessage("Enter the 6-digit OTP.");
-  try {
-    $("verifyOtpBtn").disabled = true;
-    const result = await confirmationResult.confirm(code);
-    const name = sessionStorage.getItem("seatbitePendingName") || "";
-    if (isSignup && name && result.user.displayName !== name) {
-      await updateProfile(result.user, {displayName:name});
-    }
-    sessionStorage.removeItem("seatbitePendingName");
-    confirmationResult = null;
-    $("otpPanel").classList.add("hidden");
-    setAuthMessage("Phone verified successfully.", true);
-    showAuthenticated(result.user);
-  } catch (err) {
-    console.error(err);
-    setAuthMessage(firebaseError(err));
-  } finally {
-    $("verifyOtpBtn").disabled = false;
-  }
-};
-
-$("resendOtpBtn").onclick = async () => {
-  $("authForm").requestSubmit();
-};
-
-$("logoutBtn").onclick = async () => {
-  if (auth) await signOut(auth);
-  resetSelections();
-  showAuth();
-};
-
 function firebaseError(err) {
   const map = {
-    "auth/invalid-phone-number":"The phone number is invalid.",
+    "auth/invalid-email":"The email address is invalid.",
+    "auth/user-not-found":"No account exists with this email.",
+    "auth/wrong-password":"Incorrect password.",
+    "auth/invalid-credential":"Incorrect email or password.",
+    "auth/email-already-in-use":"An account already exists with this email.",
+    "auth/weak-password":"Password must be at least 6 characters.",
     "auth/too-many-requests":"Too many attempts. Please wait and try again later.",
-    "auth/quota-exceeded":"SMS quota has been exceeded for this Firebase project.",
-    "auth/invalid-verification-code":"That OTP is incorrect.",
-    "auth/code-expired":"That OTP has expired. Request a new one.",
-    "auth/captcha-check-failed":"reCAPTCHA verification failed. Try again."
+    "auth/network-request-failed":"Network error. Check your internet connection.",
+    "auth/operation-not-allowed":"Email/password sign-in is not enabled in Firebase Authentication."
   };
   return map[err?.code] || err?.message || "Authentication failed. Please try again.";
 }

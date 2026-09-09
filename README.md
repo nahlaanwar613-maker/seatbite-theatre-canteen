@@ -3,8 +3,8 @@
 This version combines the features requested:
 
 - Create Account
-- Real phone OTP authentication using Firebase Authentication
-- Login using phone OTP
+- Email/password authentication using Firebase Authentication
+- Login using email and password
 - Location selection
 - Theatres filtered by location
 - Movies filtered by theatre
@@ -20,14 +20,14 @@ This version combines the features requested:
 - Azure Static Web Apps / GitHub Actions friendly
 - Pure HTML/CSS/JavaScript frontend
 
-## 1. Configure real OTP
+## 1. Configure Firebase email/password authentication
 
-Real SMS OTP cannot be created by static HTML alone. This project is already wired for Firebase Phone Authentication.
+This project uses Firebase Authentication with email/password sign-in, so it does not require SMS OTP or phone verification.
 
 1. Open Firebase Console: https://console.firebase.google.com/
 2. Create a Firebase project.
 3. Add a Web App to the project.
-4. Go to Authentication → Sign-in method and enable Phone.
+4. Go to Authentication → Sign-in method and enable Email/Password.
 5. Add your Azure Static Web Apps domain under Authentication → Settings → Authorized domains.
 6. Copy the Firebase Web App configuration.
 7. Open `firebase-config.js`.
@@ -35,7 +35,7 @@ Real SMS OTP cannot be created by static HTML alone. This project is already wir
 9. Commit/push the files to GitHub.
 10. GitHub Actions will redeploy the Azure Static Web App.
 
-Firebase's web phone-auth flow uses `signInWithPhoneNumber()` and a `RecaptchaVerifier`, then verifies the SMS code with `confirmationResult.confirm(code)`.
+The website uses `createUserWithEmailAndPassword()` for registration and `signInWithEmailAndPassword()` for login. No SMS OTP or reCAPTCHA is used.
 
 ## 2. Important payment note
 

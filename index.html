@@ -38,26 +38,21 @@
           </div>
 
           <div class="field">
-            <label for="phoneInput">Phone number</label>
-            <input id="phoneInput" type="tel" placeholder="+91 9876543210" autocomplete="tel">
-            <small>Use international format, for example +919876543210.</small>
+            <label for="emailInput">Email address</label>
+            <input id="emailInput" type="email" placeholder="you@example.com" autocomplete="email" required>
           </div>
 
-          <div id="recaptcha-container" class="recaptcha"></div>
+          <div class="field">
+            <label for="passwordInput">Password</label>
+            <input id="passwordInput" type="password" placeholder="Enter your password" autocomplete="current-password" minlength="6" required>
+            <small>Use at least 6 characters.</small>
+          </div>
 
-          <button id="sendOtpBtn" class="primary full" type="submit">Send OTP</button>
+          <button id="authSubmitBtn" class="primary full" type="submit">Login</button>
         </form>
 
-        <div id="otpPanel" class="otp-panel hidden">
-          <h3>Verify your phone</h3>
-          <p class="muted">Enter the real SMS code sent to your phone.</p>
-          <input id="otpInput" class="otp-input" type="text" inputmode="numeric" maxlength="6" placeholder="6-digit OTP">
-          <button id="verifyOtpBtn" class="primary full">Verify OTP</button>
-          <button id="resendOtpBtn" class="text-button">Send OTP again</button>
-        </div>
-
         <p id="authMessage" class="message"></p>
-        <p class="tiny">Real OTP is powered by Firebase Authentication. Configure your Firebase web app before deploying.</p>
+        <p class="tiny">Email/password authentication is powered by Firebase Authentication. Enable Email/Password in Firebase before deploying.</p>
       </div>
     </section>
 
@@ -171,7 +166,7 @@
       </div>
       <div class="panel">
         <h3>Security</h3>
-        <p class="muted">Phone verification is handled by Firebase Authentication. OTP codes are never stored in this website.</p>
+        <p class="muted">Email/password authentication is handled by Firebase Authentication. Passwords are managed securely by Firebase and are never stored in this website.</p>
       </div>
     </section>
 
