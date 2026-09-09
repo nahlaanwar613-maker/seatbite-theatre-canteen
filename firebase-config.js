@@ -1,18 +1,10 @@
-// Copy your Firebase Web App configuration into this file.
-// This config is intended for a browser app. Do NOT put Firebase Admin/service-account
-// credentials here.
-//
-// Firebase Console steps are documented in README.md.
 export const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyAhiEFHJyZpntfZwSzsZQExVFfEhkSX7PE",
+  authDomain: "seatbite-74c77.firebaseapp.com",
+  projectId: "seatbite-74c77",
+  storageBucket: "seatbite-74c77.firebasestorage.app",
+  messagingSenderId: "1096048472267",
+  appId: "1:1096048472267:web:ac2ee7a3f721b85653ab4e"
 };
 
-export const firebaseConfigured =
-  !firebaseConfig.apiKey.startsWith("YOUR_") &&
-  !firebaseConfig.projectId.startsWith("YOUR_") &&
-  !firebaseConfig.appId.startsWith("YOUR_");
+export const firebaseConfigured = true;
