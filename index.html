@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SeatBite — Theatre Canteen</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">🍿</div>
+      <div>
+        <h1>SeatBite</h1>
+        <span>Order to your seat</span>
+      </div>
+    </div>
+    <button class="cart-button" onclick="openCart()">🛒 <span id="cartCount">0</span></button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">THEATRE CANTEEN</p>
+        <h2>Enjoy the movie.<br><span>We'll bring the food.</span></h2>
+        <p class="hero-text">Order snacks and drinks without leaving your seat.</p>
+      </div>
+      <div class="hero-popcorn">🍿</div>
+    </section>
+
+    <section class="seat-card">
+      <div>
+        <label for="seat">Your seat</label>
+        <input id="seat" type="text" placeholder="e.g. B12" maxlength="5">
+      </div>
+      <div class="show-info">🎬 Screen 3 <strong>•</strong> 7:30 PM</div>
+    </section>
+
+    <section class="categories">
+      <button class="active" onclick="filterMenu('all', this)">All</button>
+      <button onclick="filterMenu('popcorn', this)">🍿 Popcorn</button>
+      <button onclick="filterMenu('snacks', this)">🍔 Snacks</button>
+      <button onclick="filterMenu('drinks', this)">🥤 Drinks</button>
+      <button onclick="filterMenu('combos', this)">🎁 Combos</button>
+    </section>
+
+    <section id="menu" class="menu-grid"></section>
+  </main>
+
+  <div id="cartOverlay" class="overlay hidden" onclick="closeCart(event)">
+    <aside class="cart-panel" onclick="event.stopPropagation()">
+      <div class="cart-head">
+        <h2>Your order</h2>
+        <button onclick="closeCart()">✕</button>
+      </div>
+      <div id="cartItems"></div>
+      <div class="cart-total">
+        <div><span>Subtotal</span><strong id="subtotal">₹0</strong></div>
+        <div><span>Service fee</span><strong id="serviceFee">₹0</strong></div>
+        <div class="grand"><span>Total</span><strong id="total">₹0</strong></div>
+      </div>
+      <button class="checkout" onclick="placeOrder()">Place order to my seat</button>
+    </aside>
+  </div>
+
+  <div id="successModal" class="success-modal hidden">
+    <div class="success-card">
+      <div class="success-icon">✓</div>
+      <h2>Order confirmed!</h2>
+      <p id="orderMessage"></p>
+      <div class="order-number" id="orderNumber"></div>
+      <p class="muted">Sit back and enjoy the movie. Your order will be delivered to your seat.</p>
+      <button onclick="closeSuccess()">Continue watching</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
