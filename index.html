@@ -15,7 +15,7 @@
       <button data-view="home">Home</button>
       <button data-view="orders">My Orders</button>
       <button data-view="profile">Profile</button>
-      <button id="logoutBtn" class="danger-link">Logout</button>
+      <button type="button" id="logoutBtn" class="danger-link">Logout</button>
     </nav>
   </header>
 
@@ -27,8 +27,8 @@
         <p class="muted">Order cinema food directly to your seat.</p>
 
         <div class="auth-tabs">
-          <button id="loginTab" class="active">Login</button>
-          <button id="signupTab">Create Account</button>
+          <button type="button" id="loginTab" class="active">Login</button>
+          <button type="button" id="signupTab">Create Account</button>
         </div>
 
         <form id="authForm">
@@ -94,7 +94,7 @@
         <div class="panel">
           <div class="panel-title"><span>💺</span><div><h3>4. Select seat</h3><p>Your food will be delivered to this seat.</p></div></div>
           <input id="seatInput" type="text" maxlength="5" placeholder="Example: A12" disabled>
-          <button id="unlockMenuBtn" class="primary full" disabled>Unlock Canteen Menu</button>
+          <button type="button" id="unlockMenuBtn" class="primary full" disabled>Unlock Canteen Menu</button>
         </div>
       </div>
 
@@ -106,7 +106,7 @@
             <span class="eyebrow">CANTEEN</span>
             <h2>Order food for your seat</h2>
           </div>
-          <button class="secondary" data-view="orders">📦 My Orders</button>
+          <button type="button" class="secondary" data-view="orders">📦 My Orders</button>
         </div>
         <div class="category-tabs" id="categoryTabs"></div>
         <div id="menuGrid" class="menu-grid"></div>
@@ -118,14 +118,14 @@
           </div>
           <div id="cartItems" class="cart-items"></div>
           <div id="cartTotals" class="cart-totals"></div>
-          <button id="checkoutBtn" class="primary full" disabled>Continue to Payment</button>
+          <button type="button" id="checkoutBtn" class="primary full" disabled>Continue to Payment</button>
         </div>
       </section>
     </section>
 
     <section id="paymentView" class="view hidden">
       <div class="page-heading">
-        <button class="back-button" data-view="home">← Back</button>
+        <button type="button" class="back-button" data-view="home">← Back</button>
         <div><span class="eyebrow">CHECKOUT</span><h2>Payment</h2><p>Order food only for the selected show and seat.</p></div>
       </div>
       <div class="checkout-grid">
@@ -144,7 +144,7 @@
             <input id="upiId" type="text" placeholder="example@upi">
             <small>This prototype validates the format only; it does not move money.</small>
           </div>
-          <button id="placeOrderBtn" class="primary full">Place Order</button>
+          <button type="button" id="placeOrderBtn" class="primary full">Place Order</button>
           <p id="paymentMessage" class="message"></p>
         </div>
       </div>
@@ -153,7 +153,7 @@
     <section id="ordersView" class="view hidden">
       <div class="page-heading">
         <div><span class="eyebrow">YOUR ACTIVITY</span><h2>My Orders</h2><p>Track every SeatBite order.</p></div>
-        <button class="secondary" data-view="home">+ New Order</button>
+        <button type="button" class="secondary" data-view="home">+ New Order</button>
       </div>
       <div id="ordersList" class="orders-list"></div>
     </section>
@@ -178,8 +178,8 @@
         <p id="confirmationText" class="muted"></p>
         <div id="confirmationDetails" class="confirmation-details"></div>
         <div class="confirmation-actions">
-          <button class="primary" data-view="orders">View My Orders</button>
-          <button class="secondary" data-view="home">Order More Food</button>
+          <button type="button" class="primary" data-view="orders">View My Orders</button>
+          <button type="button" class="secondary" data-view="home">Order More Food</button>
         </div>
       </div>
     </section>

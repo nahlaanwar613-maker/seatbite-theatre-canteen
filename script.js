@@ -360,6 +360,23 @@ function renderOrders() {
   }).join("");
 }
 
+// Logout button
+$("logoutBtn").addEventListener("click", async (e) => {
+  e.preventDefault();
+  if (!auth) return showAuth();
+  try {
+    await signOut(auth);
+    cart = {};
+    resetSelections();
+    navigate("home");
+    showAuth();
+    setAuthMessage("You have been logged out.", true);
+  } catch (err) {
+    console.error(err);
+    toast("Could not log out. Please try again.");
+  }
+});
+
 function resetSelections() {
   selection={location:"",theatre:null,movie:null,show:"",seat:""};
   cart={};
@@ -373,11 +390,18 @@ function resetSelections() {
 }
 
 function navigate(view) {
-  if (!$("homeView").classList.contains("hidden") && view === "home") {}
-  ["home","payment","orders","profile","confirmation"].forEach(v => $(`${v}View`).classList.toggle("hidden",v!==view));
-  if(view==="orders") renderOrders();
-  if(view==="home") renderCart();
-  window.scrollTo({top:0,behavior:"smooth"});
+  const allowed = ["home","payment","orders","profile","confirmation"];
+  if (!allowed.includes(view)) return;
+  if (!auth?.currentUser) {
+    showAuth();
+    return;
+  }
+  ["home","payment","orders","profile","confirmation"].forEach(v => {
+    $(`${v}View`).classList.toggle("hidden", v !== view);
+  });
+  if (view === "orders") renderOrders();
+  if (view === "home") renderCart();
+  window.scrollTo({top:0, behavior:"smooth"});
 }
 
 document.querySelectorAll("[data-view]").forEach(el => el.addEventListener("click", e => {
