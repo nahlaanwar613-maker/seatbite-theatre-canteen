@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SeatBite — Checkout</title>
+  <link rel="stylesheet" href="style_v2.css">
+</head>
+<body>
+  <div id="toast" class="toast"></div>
+  <header class="topbar">
+    <a class="brand" href="#" data-view="home"><span>🍿</span> SeatBite</a>
+    <nav id="mainNav" class="nav hidden">
+      <button data-view="home">Home</button><button data-view="orders">My Orders</button><button data-view="profile">Profile</button><button id="logoutBtn" class="danger-link">Logout</button>
+    </nav>
+  </header>
+  <main>
+    <section id="authView" class="view auth-view"><div class="auth-card"><div class="logo-mark">🍿</div><h1>SeatBite</h1><p class="muted">Order cinema food directly to your seat.</p><div class="auth-tabs"><button id="loginTab" class="active">Login</button><button id="signupTab">Create Account</button></div><form id="authForm"><div id="nameGroup" class="field hidden"><label>Your name</label><input id="nameInput" type="text" placeholder="Enter your name"></div><div class="field"><label>Email address</label><input id="emailInput" type="email" placeholder="you@example.com" required></div><div class="field"><label>Password</label><input id="passwordInput" type="password" minlength="6" placeholder="At least 6 characters" required></div><button id="authSubmitBtn" class="primary full" type="submit">Login</button></form><p id="authMessage" class="message"></p></div></section>
+
+    <section id="homeView" class="view hidden">
+      <div class="hero"><div><span class="eyebrow">CINEMA FOOD DELIVERY</span><h2>Pick your show. We bring the food.</h2><p>Select your theatre, movie, show and seat, then build your order.</p></div><div class="hero-icon">🎬</div></div>
+      <div class="selection-grid">
+        <div class="panel"><div class="panel-title"><span>📍</span><div><h3>Location</h3><p>Where are you watching?</p></div></div><select id="locationSelect"><option value="">Select location</option></select></div>
+        <div class="panel"><div class="panel-title"><span>🏢</span><div><h3>Theatre</h3><p>Available theatres</p></div></div><select id="theatreSelect" disabled><option value="">Select theatre</option></select></div>
+        <div class="panel"><div class="panel-title"><span>🎞️</span><div><h3>Movie & Show</h3><p>Choose your showtime</p></div></div><select id="movieSelect" disabled><option value="">Select movie</option></select><select id="showSelect" disabled><option value="">Select show</option></select></div>
+        <div class="panel"><div class="panel-title"><span>💺</span><div><h3>Your Seat</h3><p>Where should we deliver?</p></div></div><input id="seatInput" maxlength="5" placeholder="Example: A12" disabled><button id="unlockMenuBtn" class="primary full" disabled>Unlock Canteen Menu</button></div>
+      </div>
+      <div id="showSummary" class="show-summary hidden"></div>
+      <section id="menuSection" class="hidden"><div class="section-heading"><div><span class="eyebrow">CANTEEN</span><h2>Order food for your seat</h2></div><button class="secondary" data-view="orders">📦 My Orders</button></div><div id="categoryTabs" class="category-tabs"></div><div id="menuGrid" class="menu-grid"></div><div class="cart-panel"><div class="cart-header"><h3>🛒 Your Cart</h3><span id="cartCount" class="pill">0 items</span></div><div id="cartItems" class="cart-items"></div><div id="cartTotals" class="cart-totals"></div><button id="checkoutBtn" class="primary full" disabled>Continue to Checkout</button></div></section>
+    </section>
+
+    <section id="paymentView" class="view hidden">
+      <div class="checkout-header"><button class="back-button" data-view="home">← Back to menu</button><div><span class="eyebrow">SECURE CHECKOUT</span><h2>Complete your order</h2><p>Review everything before placing your SeatBite order.</p></div></div>
+      <div class="checkout-progress"><div class="progress-step done"><span>✓</span><b>Order</b></div><div class="progress-line done"></div><div class="progress-step active"><span>2</span><b>Payment</b></div><div class="progress-line"></div><div class="progress-step"><span>3</span><b>Confirmed</b></div></div>
+      <div class="checkout-layout">
+        <div class="checkout-main">
+          <div class="panel checkout-card"><div class="card-heading"><div><span class="eyebrow">DELIVERY DETAILS</span><h3>Deliver to your seat</h3></div><span class="secure-badge">✓ Ready</span></div><div id="deliveryDetails" class="delivery-details"></div></div>
+          <div class="panel checkout-card"><div class="card-heading"><div><span class="eyebrow">PAYMENT METHOD</span><h3>How would you like to pay?</h3></div></div><div class="payment-options"><label class="payment-option"><input type="radio" name="payment" value="upi" checked><span class="pay-icon">📱</span><div><b>UPI</b><small>Fast & convenient · Demo payment</small></div><strong>›</strong></label><label class="payment-option"><input type="radio" name="payment" value="cod"><span class="pay-icon">💵</span><div><b>Cash on Delivery</b><small>Pay when food reaches your seat</small></div><strong>›</strong></label></div><div id="upiBox" class="upi-box"><label for="upiId">UPI ID</label><div class="input-with-icon"><span>₹</span><input id="upiId" placeholder="name@upi" autocomplete="off"></div><small>Demo only: this checks the UPI format. No money is transferred.</small></div><p id="paymentMessage" class="message"></p></div>
+        </div>
+        <aside class="panel order-receipt"><div class="receipt-title"><span>🧾</span><div><span class="eyebrow">ORDER SUMMARY</span><h3>Your snacks</h3></div></div><div id="checkoutSummary"></div><div class="receipt-note">🔒 Your order details stay on this device in this prototype.</div><button id="placeOrderBtn" class="primary checkout-button">Place Order <span id="placeOrderAmount">₹0</span></button><p class="tiny center">By placing this order, you confirm the selected show, seat and payment method.</p></aside>
+      </div>
+    </section>
+
+    <section id="ordersView" class="view hidden"><div class="page-heading"><div><span class="eyebrow">YOUR ACTIVITY</span><h2>My Orders</h2></div><button class="secondary" data-view="home">+ New Order</button></div><div id="ordersList" class="orders-list"></div></section>
+    <section id="profileView" class="view hidden"><div class="page-heading"><div><span class="eyebrow">ACCOUNT</span><h2>Profile</h2></div></div><div class="profile-card panel"><div class="avatar" id="profileAvatar">S</div><div><h3 id="profileName">SeatBite User</h3><p id="profilePhone" class="muted"></p></div></div></section>
+    <section id="confirmationView" class="view hidden"><div class="confirmation-card"><div class="success-icon">✓</div><span class="eyebrow">ORDER CONFIRMED</span><h2>Your food order is confirmed!</h2><p id="confirmationText" class="muted"></p><div id="confirmationDetails" class="confirmation-details"></div><div class="confirmation-actions"><button class="primary" data-view="orders">View My Orders</button><button class="secondary" data-view="home">Order More Food</button></div></div></section>
+  </main>
+  <script type="module" src="script_v2.js"></script>
+</body>
+</html>
